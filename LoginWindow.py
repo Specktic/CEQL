@@ -1,8 +1,8 @@
 from tkinter import *
 import os
 import xml.etree.ElementTree as ET
-import Compression
-from Compression import *
+import Huffman
+from Huffman import *
 
 Comp = Compression.Huffman()
 
