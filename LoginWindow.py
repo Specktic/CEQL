@@ -1,6 +1,10 @@
 from tkinter import *
 import os
 import xml.etree.ElementTree as ET
+import Compression
+from Compression import *
+
+Comp = Compression.Huffman()
 
 
 class LoginWindow:
