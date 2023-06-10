@@ -4,8 +4,6 @@ import xml.etree.ElementTree as ET
 import Huffman
 from Huffman import *
 
-Comp = Compression.Huffman()
-
 
 class LoginWindow:
     def __init__(self):
@@ -60,6 +58,7 @@ class LoginWindow:
     def login(self):
         if self.username_entry.get() == "test user" and self.password_entry.get() == "test password":
             print("Logged in")
+
         else:
             print("Username or password doesn't match")
             self.create_register_window()
