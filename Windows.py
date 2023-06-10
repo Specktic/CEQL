@@ -85,7 +85,7 @@ class Windows:
     def register(self):
         self.registration_window()
 
-    # Creates account registration window
+    # Opens account registration window
     def registration_window(self):
         registration_window = Tk()
         registration_window.geometry("800x450")
@@ -161,7 +161,25 @@ class Windows:
         )
         new_password_confirmation_entry.place(x=360, y=250)
 
-    # Creates main database window when logged in
+        # Create account button
+        new_account_button = Button(
+            registration_window,
+            text="Create Account",
+            command=self.new_account,
+            font=("Helvetica", 15),
+            fg="black",
+            bg="white",
+            activeforeground="black",
+            activebackground="grey",
+            state="active"
+        )
+        new_account_button.place(x=360, y=300)
+
+    @staticmethod
+    def new_account():
+        print("account created")
+
+    # Opens main database window when logged in
     def database_window(self):
         database_window = Tk()
         database_window.geometry("800x450")
