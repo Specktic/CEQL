@@ -165,7 +165,12 @@ class Windows:
         new_account_button = Button(
             registration_window,
             text="Create Account",
-            command=self.new_account,
+            command=lambda: self.new_account(
+                new_name_entry.get(),
+                new_username_entry.get(),
+                new_password_entry.get(),
+                new_password_confirmation_entry.get()
+            ),
             font=("Helvetica", 15),
             fg="black",
             bg="white",
@@ -176,8 +181,13 @@ class Windows:
         new_account_button.place(x=360, y=300)
 
     @staticmethod
-    def new_account():
-        print("account created")
+    def new_account(name, username, pass1, pass2):
+        if name != '' and username != '' and pass1 != '' and pass2 != '' and pass1 == pass2:
+            print("yei")
+            print(name)
+            print(username)
+        else:
+            print("nuh uh")
 
     # Opens main database window when logged in
     def database_window(self):
