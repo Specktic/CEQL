@@ -6,8 +6,9 @@ class Node(object):
     def children(self):
         return self.left, self.right
 
-def huffman_tree(node, string):
-    if type(node) is str:
+
+def huffman_tree(node, string=''):
+    if type(node) == str:
         return {node: string}
     (l, r) = node.children()
     d = dict()
