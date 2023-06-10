@@ -1,8 +1,10 @@
-import shutil
 import sqlite3
 from tkinter import *
 import os
 import xml.etree.ElementTree as ET
+import Huffman
+
+compressor = Huffman.Compressor()
 
 
 class Windows:
@@ -186,6 +188,8 @@ class Windows:
             print("yei")
             print(name)
             print(username)
+            print("-------------------------------------")
+            compressor.compress(pass1)
         else:
             print("nuh uh")
 
