@@ -2,7 +2,6 @@ from tkinter import *
 import os
 import xml.etree.ElementTree as ET
 import Huffman
-from Huffman import *
 
 
 class LoginWindow:
@@ -57,7 +56,7 @@ class LoginWindow:
 
     def login(self):
         if self.username_entry.get() == "test user" and self.password_entry.get() == "test password":
-            print("Logged in")
+            Huffman.compress(self.username_entry.get)
 
         else:
             print("Username or password doesn't match")

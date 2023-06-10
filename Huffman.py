@@ -1,3 +1,6 @@
+from collections import Counter
+
+
 class Node(object):
     def __init__(self, left=None, right=None):
         self.left = left
@@ -26,3 +29,14 @@ def tree_maker(nodes):
         nodes.append((node, c1 + c2))
         nodes = sorted(nodes, key=lambda x: x[1], reverse=True)
     return nodes[0][0]
+
+
+def compress(thing):
+    string = thing
+    frequency = dict(Counter(string))
+    frequency = sorted(frequency.items(), key=lambda x: x[1], reverse=True)
+    nodes = tree_maker(frequency)
+    encoding = huffman_tree(nodes)
+    for character in encoding:
+        print(character)
+        print(encoding[character])
