@@ -3,11 +3,9 @@ import sqlite3
 from tkinter import *
 import os
 import xml.etree.ElementTree as ET
-import Huffman
-from Huffman import *
 
 
-class LoginWindow:
+class Windows:
     def __init__(self):
         self.login_window = Tk()
         self.login_window.geometry("800x450")
@@ -73,7 +71,6 @@ class LoginWindow:
         register_window.title("Visualizer")
         register_window.config(background="#8e8f99")
         self.login_window.destroy()
-        
 
         # name entry
         name_entry = Entry(
@@ -93,7 +90,7 @@ class LoginWindow:
         register_button = Button(
             register_window,
             text="Create XML Store",
-            command=lambda: self.create_xml(name_entry.get(),attributes_entry.get()),
+            command=lambda: self.create_xml(name_entry.get(), attributes_entry.get()),
             font=("Helvetica", 15),
             fg="black",
             bg="white",
@@ -117,14 +114,13 @@ class LoginWindow:
 
         register_window.mainloop()
 
-    def create_xml(self,name, attributes):
+    def create_xml(self, name, attributes):
 
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
 
-
-        cursor.execute("CREATE TABLE IF NOT EXISTS xml_documents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, xml TEXT)")
-
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS xml_documents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, xml TEXT)")
 
         cursor.execute("SELECT id FROM xml_documents WHERE name=?", (name,))
         result = cursor.fetchone()
@@ -140,7 +136,6 @@ class LoginWindow:
                 os.makedirs(ruta_xml_store)
                 print("Carpeta creada:", ruta_xml_store)
 
-
             atributos = attributes.split(",")
             print("Atributos:", atributos)
 
@@ -152,21 +147,16 @@ class LoginWindow:
             tree = ET.ElementTree(root)
             tree.write(archivo_xml)
 
-
             with open(archivo_xml, "r") as f:
                 xml_content = f.read()
                 cursor.execute("INSERT INTO xml_documents (name, xml) VALUES (?, ?)", (name, xml_content))
                 conn.commit()
                 print("XML creado y registrado en la base de datos:", archivo_xml)
-
-
         conn.close()
-    def delete_xml(self,name):
 
+    def delete_xml(self, name):
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-
-
         cursor.execute("SELECT id, xml FROM xml_documents WHERE name=?", (name,))
         result = cursor.fetchone()
 
@@ -191,8 +181,6 @@ class LoginWindow:
 
         else:
             print("El XML no existe en la base de datos.")
-
-
         conn.close()
 
     def run(self):
@@ -200,8 +188,6 @@ class LoginWindow:
 
 
 # Crear instancia de la ventana de inicio de sesión
-login = LoginWindow()
+login = Windows()
 # Ejecutar la ventana de inicio de sesión
 login.run()
-
-
