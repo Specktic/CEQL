@@ -5,3 +5,12 @@ class Node(object):
 
     def children(self):
         return self.left, self.right
+
+def huffman_tree(node, string):
+    if type(node) is str:
+        return {node: string}
+    (l, r) = node.children()
+    d = dict()
+    d.update(huffman_tree(l, string + '0'))
+    d.update(huffman_tree(r, string + '1'))
+    return d
