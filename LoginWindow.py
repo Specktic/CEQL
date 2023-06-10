@@ -2,6 +2,7 @@ from tkinter import *
 import os
 import xml.etree.ElementTree as ET
 import Huffman
+from Huffman import *
 
 
 class LoginWindow:
@@ -56,7 +57,7 @@ class LoginWindow:
 
     def login(self):
         if self.username_entry.get() == "test user" and self.password_entry.get() == "test password":
-            Huffman.compress(self.username_entry.get)
+            print("Logged in")
 
         else:
             print("Username or password doesn't match")
@@ -102,7 +103,7 @@ class LoginWindow:
         register_window.mainloop()
 
     def create_xml(self, name,attributes):
-        ruta_carpeta_existente = r"C:\Users\micha\OneDrive\Documents\proyecto 3\CEQL\xml"
+        ruta_carpeta_existente = r"CEQL\xml"
         ruta_xml_store = os.path.join(ruta_carpeta_existente, name)
 
         # Verificar si la carpeta ya existe
