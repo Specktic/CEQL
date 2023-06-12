@@ -78,7 +78,7 @@ class Windows:
         self.register_account_button.place(x=420, y=350)
 
     def login(self):
-        if self.username_entry.get() == "test" and self.password_entry.get() == "pass":
+        if self.username_entry.get() == "catconv" and compressor.compress(self.password_entry.get()) == {'i': '00', 'k': '01', 't': '1'}:
             print("Logged in")
             self.database_window()
         else:
@@ -185,10 +185,6 @@ class Windows:
     @staticmethod
     def new_account(name, username, pass1, pass2):
         if name != '' and username != '' and pass1 != '' and pass2 != '' and pass1 == pass2:
-            print("yei")
-            print(name)
-            print(username)
-            print("-------------------------------------")
             compressor.compress(pass1)
         else:
             print("nuh uh")

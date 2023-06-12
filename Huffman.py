@@ -11,7 +11,8 @@ class Compressor:
         d.update(self.huffman_tree(r, string + '1'))
         return d
 
-    def tree_maker(self, nodes):
+    @staticmethod
+    def tree_maker(nodes):
         while len(nodes) > 1:
             (key1, c1) = nodes[-1]
             (key2, c2) = nodes[-2]
@@ -22,14 +23,12 @@ class Compressor:
         return nodes[0][0]
 
     def compress(self, thing):
-        string = thing
-        frequency = dict(Counter(string))
+        frequency = dict(Counter(thing))
         frequency = sorted(frequency.items(), key=lambda x: x[1], reverse=True)
         nodes = self.tree_maker(frequency)
         encoding = self.huffman_tree(nodes)
-        for character in encoding:
-            print(character)
-            print(encoding[character])
+        print(encoding)
+        return encoding
 
 
 class Node(object):
