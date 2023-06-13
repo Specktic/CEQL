@@ -1,10 +1,18 @@
 import sqlite3
+import serial.tools.list_ports
 from tkinter import *
 import os
 import xml.etree.ElementTree as ET
 import Huffman
+import UserManagement
 
 compressor = Huffman.Compressor()
+users = UserManagement.UserManager()
+
+# Serial communication
+ports = serial.tools.list_ports.comports()
+serialInst = serial.Serial()
+portList = []
 
 
 class Windows:
@@ -77,12 +85,8 @@ class Windows:
         )
         self.register_account_button.place(x=420, y=350)
 
-    def login(self):
-        if self.username_entry.get() == "catconv" and compressor.compress(self.password_entry.get()) == {'i': '00', 'k': '01', 't': '1'}:
-            print("Logged in")
-            self.database_window()
-        else:
-            print("Username or password doesn't match")
+    def login(self, user, password):
+        return users.login(user, password)
 
     def register(self):
         self.registration_window()
@@ -313,6 +317,14 @@ class Windows:
 
     def run(self):
         self.welcome_window.mainloop()
+
+        serialInst.baudrate = 9600
+        serialInst.port = "COM3"
+        serialInst.open()
+        while True:
+            if serialInst.in_waiting:
+                pack = serialInst.readline()
+                print(pack.decode('utf'))
 
 
 # Crea la instancia de la ventana de inicio de sesión
