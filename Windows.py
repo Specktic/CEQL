@@ -1,4 +1,5 @@
 import sqlite3
+import csv
 import serial.tools.list_ports
 from tkinter import *
 import os
@@ -85,8 +86,13 @@ class Windows:
         )
         self.register_account_button.place(x=420, y=350)
 
-    def login(self, user, password):
-        return users.login(user, password)
+    def login(self):
+        user = self.username_entry.get()
+        password = compressor.compress(self.password_entry.get())
+        if users.login(user, password):
+            self.database_window()
+        else:
+            print("nu uh")
 
     def register(self):
         self.registration_window()
@@ -189,7 +195,15 @@ class Windows:
     @staticmethod
     def new_account(name, username, pass1, pass2):
         if name != '' and username != '' and pass1 != '' and pass2 != '' and pass1 == pass2:
-            compressor.compress(pass1)
+            f = open("Accounts.csv", "a", newline="")
+            newAcc = []
+            newAcc.append(name)
+            newAcc.append(username)
+            newAcc.append(compressor.compress(pass1))
+            writer = csv.writer(f)
+            writer.writerow(newAcc)
+            f.close()
+
         else:
             print("nuh uh")
 
@@ -325,6 +339,8 @@ class Windows:
             if serialInst.in_waiting:
                 pack = serialInst.readline()
                 print(pack.decode('utf'))
+            else:
+                break
 
 
 # Crea la instancia de la ventana de inicio de sesión
