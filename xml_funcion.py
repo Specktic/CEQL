@@ -492,6 +492,7 @@ class update:
     def run(self):
         self.root.mainloop()
 
+
 class Search:
     def __init__(self):
         self.root = tk.Tk()
@@ -501,11 +502,13 @@ class Search:
         self.entry_num_conditions = tk.Entry(self.root)
         self.button_create = tk.Button(self.root, text="Crear componentes de búsqueda", command=self.create_search_components)
         self.button_search = tk.Button(self.root, text="Buscar", command=self.search_xml_instances)
+        self.button_delete = tk.Button(self.root, text="Eliminar", command=self.delete_xml_instances)
 
         self.label_num_conditions.pack()
         self.entry_num_conditions.pack()
         self.button_create.pack()
         self.button_search.pack()
+        self.button_delete.pack()
 
         self.search_components = []
 
@@ -516,12 +519,6 @@ class Search:
         self.treeview.heading("Nombre", text="Nombre")
         self.treeview.heading("Contenido XML", text="Contenido XML")
         self.treeview.pack()
-
-        self.operator = tk.StringVar(value="AND")
-        self.radio_and = tk.Radiobutton(self.root, text="AND", variable=self.operator, value="AND")
-        self.radio_or = tk.Radiobutton(self.root, text="OR", variable=self.operator, value="OR")
-        self.radio_and.pack()
-        self.radio_or.pack()
 
     def create_search_components(self):
         num_conditions = int(self.entry_num_conditions.get())
@@ -536,7 +533,7 @@ class Search:
             label_field.pack()
 
             # Crear ComboBox para seleccionar el campo
-            combobox_field = ttk.Combobox(self.root, values=["Nombre del Atributo", "Atributo"], state="readonly")
+            combobox_field = ttk.Combobox(self.root, values=["id", "name"])
             combobox_field.pack()
 
             # Crear etiqueta para el valor
@@ -550,9 +547,23 @@ class Search:
             # Agregar los componentes a la lista
             self.search_components.append((combobox_field, entry_value))
 
+        # Crear etiqueta para seleccionar el operador lógico
+        label_operator = tk.Label(self.root, text="Operador lógico:")
+        label_operator.pack()
+
+        # Crear variable de control para los radiobuttons
+        self.operator_var = tk.StringVar()
+
+        # Crear radiobuttons para seleccionar el operador lógico
+        self.radio_and = tk.Radiobutton(self.root, text="AND", value="AND", variable=self.operator_var)
+        self.radio_and.pack()
+
+        self.radio_or = tk.Radiobutton(self.root, text="OR", value="OR", variable=self.operator_var)
+        self.radio_or.pack()
+
         # Ajustar el tamaño de la ventana
         self.root.update()
-        self.root.geometry("400x500")
+        self.root.geometry("400x550")
 
     def clear_search_components(self):
         if self.search_components:
@@ -562,27 +573,26 @@ class Search:
             self.search_components = []
 
     def search_xml_instances(self):
-        operator = self.operator.get()
-
+        operator = self.operator_var.get()
         conditions = []
         for combobox_field, entry_value in self.search_components:
             field = combobox_field.get()
             value = entry_value.get()
             if field and value:
-                if field == "Nombre del Atributo":
-                    condition = f"xml LIKE '%{value}%'"
-                else:
-                    condition = f"xml_content LIKE '%{value}%'"
+                condition = f"{field} = '{value}'"
                 conditions.append(condition)
-
-        conditions_sql = f" {operator} ".join(conditions)
 
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
 
-        query = "SELECT id, xml_name, xml_content FROM xml_documents"
+        query = "SELECT id, name, xml FROM xml_documents"
         if conditions:
-            query += " WHERE " + conditions_sql
+            if operator == "AND":
+                conditions_sql = " AND ".join(conditions)
+                query += f" WHERE {conditions_sql}"
+            else:
+                conditions_sql = " OR ".join(conditions)
+                query += f" WHERE {conditions_sql}"
 
         cursor.execute(query)
         results = cursor.fetchall()
@@ -590,6 +600,28 @@ class Search:
         self.display_results(results)
 
         conn.close()
+
+    def delete_xml_instances(self):
+        selected_items = self.treeview.selection()
+        if not selected_items:
+            print("No se ha seleccionado ninguna instancia para eliminar.")
+            return
+
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+
+        for item in selected_items:
+            xml_id = self.treeview.item(item, "values")[0]
+            query = f"DELETE FROM xml_documents WHERE id = {xml_id}"
+            cursor.execute(query)
+
+        conn.commit()
+        conn.close()
+
+        print("Instancias eliminadas correctamente.")
+
+        # Actualizar la lista de resultados después de eliminar
+        self.search_xml_instances()
 
     def display_results(self, results):
         self.treeview.delete(*self.treeview.get_children())
@@ -603,6 +635,7 @@ class Search:
 
     def run(self):
         self.root.mainloop()
+
 
     
 class MainApp:
