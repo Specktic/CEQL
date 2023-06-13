@@ -276,58 +276,8 @@ class Windows:
         delete_button.place(x=300, y=350)
         database_window.mainloop()
 
-    def create_xml(self, name, attributes):
-        conn = sqlite3.connect("database.db")
-        cursor = conn.cursor()
-        cursor.execute(
-            "CREATE TABLE IF NOT EXISTS xml_documents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, xml TEXT)")
-        cursor.execute("SELECT id FROM xml_documents WHERE name=?", (name,))
-        result = cursor.fetchone()
-        if result:
-            print("El XML ya existe en la base de datos.")
-        else:
-            ruta_carpeta_existente = r"CEQL\xml"
-            ruta_xml_store = os.path.join(ruta_carpeta_existente, name)
-            if not os.path.exists(ruta_xml_store):
-                os.makedirs(ruta_xml_store)
-                print("Carpeta creada:", ruta_xml_store)
-            atributos = attributes.split(",")
-            print("Atributos:", atributos)
-            root = ET.Element(name)
-            for atributo in atributos:
-                elemento = ET.SubElement(root, atributo)
-            archivo_xml = os.path.join(ruta_xml_store, f"{name}.xml")
-            tree = ET.ElementTree(root)
-            tree.write(archivo_xml)
-            with open(archivo_xml, "r") as f:
-                xml_content = f.read()
-                cursor.execute("INSERT INTO xml_documents (name, xml) VALUES (?, ?)", (name, xml_content))
-                conn.commit()
-                print("XML creado y registrado en la base de datos:", archivo_xml)
-        conn.close()
 
-    def delete_xml(self, name):
-        conn = sqlite3.connect("database.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT id, xml FROM xml_documents WHERE name=?", (name,))
-        result = cursor.fetchone()
-        if result:
-            xml_id, xml_content = result
-            cursor.execute("DELETE FROM xml_documents WHERE id=?", (xml_id,))
-            conn.commit()
-            print("XML eliminado de la base de datos.")
-            ruta_carpeta_existente = r"CEQL\xml"
-            ruta_xml_store = os.path.join(ruta_carpeta_existente, name)
-            archivo_xml = os.path.join(ruta_xml_store, f"{name}.xml")
-            if os.path.exists(archivo_xml):
-                os.remove(archivo_xml)
-                print("Archivo XML eliminado:", archivo_xml)
-            if os.path.exists(ruta_xml_store):
-                os.rmdir(ruta_xml_store)
-                print("Carpeta eliminada:", ruta_xml_store)
-        else:
-            print("El XML no existe en la base de datos.")
-        conn.close()
+
 
     def run(self):
         self.welcome_window.mainloop()
